@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -9,43 +11,29 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  String activeTab = "overview";
-
-  final List<Map<String, dynamic>> features = [
-    {"icon": Iconsax.card, "label": "Cards", "color": Colors.blue.shade100},
+  final List<Map<String, dynamic>> options = [
     {
-      "icon": Iconsax.arrow_right,
-      "label": "Transfer",
-      "color": Colors.red.shade100
+      "icon": Iconsax.activity,
+      "label": "Tasa Interés",
+      "route": "/interest-rate"
     },
-    {
-      "icon": Iconsax.dollar_circle,
-      "label": "Pay bills",
-      "color": Colors.green.shade100
-    },
-    {"icon": Iconsax.add, "label": "Top up", "color": Colors.yellow.shade100},
     {
       "icon": Iconsax.trend_up,
-      "label": "Investments",
-      "color": Colors.purple.shade100
+      "label": "Interés Simple",
+      "route": "/simple-interest"
     },
     {
-      "icon": Iconsax.search_normal,
-      "label": "Statistics",
-      "color": Colors.indigo.shade100
+      "icon": Iconsax.graph,
+      "label": "Interés Compuesto",
+      "route": "/compound-interest"
     },
+    {"icon": Iconsax.wallet, "label": "Anualidades", "route": "/annuities"},
   ];
 
-  final List<Map<String, dynamic>> transactions = [
-    {"description": "Amazon.com", "amount": -79.99, "date": "2023-06-15"},
-    {"description": "Salary Deposit", "amount": 3500.00, "date": "2023-06-01"},
-    {"description": "Uber Ride", "amount": -24.50, "date": "2023-06-10"},
-    {
-      "description": "Netflix Subscription",
-      "amount": -13.99,
-      "date": "2023-06-05"
-    },
-  ];
+  void _logout() async {
+    await FirebaseAuth.instance.signOut(); // Cierra sesión en Firebase
+    Get.offAllNamed("/sign-in"); // Redirige a la pantalla de inicio de sesión
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,40 +41,47 @@ class _DashboardPageState extends State<DashboardPage> {
       backgroundColor: Colors.grey.shade100,
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              // Header
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
                       CircleAvatar(
-                        radius: 20,
-                        backgroundColor: Colors.grey.shade300,
-                      ),
-                      SizedBox(width: 10),
+                          radius: 20, backgroundColor: Colors.grey.shade300),
+                      const SizedBox(width: 10),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Hi, John Smith",
+                          const Text("Hola, Usuario",
                               style: TextStyle(fontWeight: FontWeight.w500)),
-                          Text("Welcome back!",
+                          const Text("Bienvenido de nuevo!",
                               style:
                                   TextStyle(fontSize: 12, color: Colors.grey)),
                         ],
                       ),
                     ],
                   ),
-                  Icon(Iconsax.notification, size: 28),
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Iconsax.notification, size: 28),
+                        onPressed: () {},
+                      ),
+                      IconButton(
+                        icon: const Icon(Iconsax.logout,
+                            size: 28, color: Colors.red),
+                        onPressed: _logout,
+                      ),
+                    ],
+                  ),
                 ],
               ),
-              SizedBox(height: 20),
-
-              // Card Balance
+              const SizedBox(height: 20),
               Container(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
@@ -95,144 +90,60 @@ class _DashboardPageState extends State<DashboardPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Total Balance",
+                    const Text("Total Balance",
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.w600)),
-                    SizedBox(height: 4),
-                    Text("\$3,469.52",
+                    const SizedBox(height: 4),
+                    const Text("\$3,469.52",
                         style: TextStyle(
                             fontSize: 28, fontWeight: FontWeight.bold)),
-                    SizedBox(height: 8),
-                    Text("**** **** **** 1076",
+                    const SizedBox(height: 8),
+                    const Text("**** **** **** 1076",
                         style: TextStyle(color: Colors.grey)),
                   ],
                 ),
               ),
-              SizedBox(height: 20),
-
-              // Feature Buttons
-              GridView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12),
-                itemCount: features.length,
-                itemBuilder: (context, index) {
-                  final feature = features[index];
-                  return GestureDetector(
-                    onTap: () {},
-                    child: Column(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                              color: feature["color"],
-                              borderRadius: BorderRadius.circular(12)),
-                          child: Icon(feature["icon"], size: 28),
-                        ),
-                        SizedBox(height: 6),
-                        Text(feature["label"], style: TextStyle(fontSize: 12)),
-                      ],
-                    ),
-                  );
-                },
-              ),
-              SizedBox(height: 20),
-
-              // Tabs
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _tabButton("Overview", activeTab == "overview"),
-                  _tabButton("Transactions", activeTab == "transactions"),
-                ],
-              ),
-              SizedBox(height: 10),
-
-              // Content
+              const SizedBox(height: 20),
               Expanded(
-                child: activeTab == "overview"
-                    ? _overviewContent()
-                    : _transactionsContent(),
+                child: GridView.builder(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                  ),
+                  itemCount: options.length,
+                  itemBuilder: (context, index) {
+                    final option = options[index];
+                    return ElevatedButton(
+                      onPressed: () => Get.toNamed(option["route"]),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        padding: const EdgeInsets.all(16),
+                        elevation: 4,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(option["icon"],
+                              size: 40, color: Colors.blueAccent),
+                          const SizedBox(height: 10),
+                          Text(option["label"],
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.w500)),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
             ],
           ),
         ),
-      ),
-
-      // Bottom Navigation
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Iconsax.home), label: "Home"),
-          BottomNavigationBarItem(
-              icon: Icon(Iconsax.search_normal), label: "Search"),
-          BottomNavigationBarItem(icon: Icon(Iconsax.message), label: "Mail"),
-          BottomNavigationBarItem(
-              icon: Icon(Iconsax.setting), label: "Settings"),
-        ],
-      ),
-    );
-  }
-
-  Widget _tabButton(String label, bool isActive) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          activeTab = label.toLowerCase();
-        });
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-        decoration: BoxDecoration(
-          color: isActive ? Colors.blue.shade100 : Colors.transparent,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Text(label,
-            style: TextStyle(
-                fontWeight: FontWeight.w500,
-                color: isActive ? Colors.blue : Colors.black)),
-      ),
-    );
-  }
-
-  Widget _overviewContent() {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.circular(12)),
-      child: Center(
-        child: Text("Placeholder for account overview charts",
-            style: TextStyle(color: Colors.grey)),
-      ),
-    );
-  }
-
-  Widget _transactionsContent() {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.circular(12)),
-      child: ListView.separated(
-        itemCount: transactions.length,
-        separatorBuilder: (context, index) => Divider(),
-        itemBuilder: (context, index) {
-          final transaction = transactions[index];
-          return ListTile(
-            title: Text(transaction["description"],
-                style: TextStyle(fontWeight: FontWeight.w500)),
-            subtitle: Text(transaction["date"],
-                style: TextStyle(fontSize: 12, color: Colors.grey)),
-            trailing: Text(
-              "\$${transaction["amount"].toStringAsFixed(2)}",
-              style: TextStyle(
-                  color: transaction["amount"] < 0 ? Colors.red : Colors.green,
-                  fontWeight: FontWeight.bold),
-            ),
-          );
-        },
       ),
     );
   }

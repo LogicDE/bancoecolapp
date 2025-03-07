@@ -1,32 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import '../../presentation/controllers/forgot_password_controller.dart';
 
-class ForgotPasswordPage extends StatefulWidget {
-  const ForgotPasswordPage({super.key});
+class ForgotPasswordPage extends StatelessWidget {
+  ForgotPasswordPage({super.key});
 
-  @override
-  _ForgotPasswordPageState createState() => _ForgotPasswordPageState();
-}
-
-class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
-  String code = "";
-
-  void handleNumberPress(String number) {
-    if (code.length < 6) {
-      setState(() {
-        code += number;
-      });
-    }
-  }
-
-  void handleDelete() {
-    if (code.isNotEmpty) {
-      setState(() {
-        code = code.substring(0, code.length - 1);
-      });
-    }
-  }
+  final ForgotPasswordController controller =
+      Get.put(ForgotPasswordController());
 
   @override
   Widget build(BuildContext context) {
@@ -53,10 +34,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               const SizedBox(height: 20),
 
               // Input Field
-              TextFormField(
-                readOnly: true,
+              TextField(
+                controller: controller.emailController,
+                keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
-                  hintText: "Type your phone number",
+                  hintText: "Enter your email",
                   filled: true,
                   fillColor: Colors.grey.shade200,
                   border: OutlineInputBorder(
@@ -64,42 +46,15 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     borderSide: BorderSide.none,
                   ),
                 ),
-                controller: TextEditingController(text: code),
               ),
               const SizedBox(height: 8),
-              const Text("We'll send you a code to verify your phone number",
+              const Text("We'll send you a password reset link",
                   style: TextStyle(fontSize: 14, color: Colors.grey)),
               const SizedBox(height: 24),
 
-              // Custom Number Pad
-              Expanded(
-                child: GridView.builder(
-                  itemCount: 12,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                  ),
-                  itemBuilder: (context, index) {
-                    if (index == 9) {
-                      return const SizedBox.shrink(); // Espacio vacío
-                    } else if (index == 10) {
-                      return _numberButton("0");
-                    } else if (index == 11) {
-                      return _deleteButton();
-                    } else {
-                      return _numberButton("${index + 1}");
-                    }
-                  },
-                ),
-              ),
-              const SizedBox(height: 12),
-
               // Send Button
               ElevatedButton(
-                onPressed: () {
-                  // Acción de envío del código
-                },
+                onPressed: controller.resetPassword,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   minimumSize: const Size(double.infinity, 50),
@@ -112,38 +67,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               const SizedBox(height: 16),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _numberButton(String number) {
-    return GestureDetector(
-      onTap: () => handleNumberPress(number),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.grey.shade200,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Center(
-          child: Text(number,
-              style:
-                  const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-        ),
-      ),
-    );
-  }
-
-  Widget _deleteButton() {
-    return GestureDetector(
-      onTap: handleDelete,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.red.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: const Center(
-          child: Icon(Iconsax.arrow_left, size: 28, color: Colors.red),
         ),
       ),
     );

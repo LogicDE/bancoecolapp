@@ -1,11 +1,21 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'presentation/screens/sign_up_screen.dart';
 import 'presentation/screens/forgotpasswor_screen.dart';
 import 'presentation/screens/home_screen.dart';
 import 'presentation/screens/sign_in_screen.dart';
+import 'presentation/screens/simple_interest_screen.dart';
+import 'firebase_options.dart';
+import 'core/middlewares/auth_middleware.dart';
 
-void main() {
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -17,19 +27,16 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'EcolApp',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      initialRoute: '/sign-in', // Define la ruta inicial
+      initialRoute: FirebaseAuth.instance.currentUser == null ? '/sign-in' : '/dashboard',
       getPages: [
-        GetPage(
-            name: '/sign-in',
-            page: () => const SignInPage()), // Página de inicio
-        GetPage(name: '/sign-up', page: () => const SignUpPage()),
-        GetPage(
-            name: '/forgot-password', page: () => const ForgotPasswordPage()),
-        GetPage(name: '/dashboard', page: () => const DashboardPage()),
+        GetPage(name: '/sign-in', page: () => SignInPage()),
+        GetPage(name: '/sign-up', page: () => SignUpPage()),
+        GetPage(name: '/forgot-password', page: () => ForgotPasswordPage()),
+        GetPage(name: '/dashboard', 
+            page: () => DashboardPage(),
+            middlewares: [AuthMiddleware()]), // Protección con middleware
+        GetPage(name: '/simple-interest', page: () => const SimpleInterestScreen(),
+            middlewares: [AuthMiddleware()]), // Protección con middleware
       ],
     );
   }
