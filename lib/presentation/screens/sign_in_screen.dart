@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import '../controllers/sign_in_controller.dart';
 
 class SignInPage extends StatelessWidget {
-  const SignInPage({super.key});
+  SignInPage({super.key});
+
+  final SignInController controller = Get.put(SignInController());
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +54,8 @@ class SignInPage extends StatelessWidget {
             ),
             SizedBox(height: 30),
             TextField(
+              controller:
+                  controller.emailController, // Conectado con el controlador
               decoration: InputDecoration(
                 hintText: 'Email or Username',
                 border:
@@ -60,35 +65,48 @@ class SignInPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 12),
-            TextField(
-              obscureText: true,
-              decoration: InputDecoration(
-                hintText: 'Password',
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                filled: true,
-                fillColor: Colors.white,
-              ),
-            ),
+            Obx(() => TextField(
+                  controller: controller
+                      .passwordController, // Conectado con el controlador
+                  obscureText:
+                      !controller.isPasswordVisible.value, // Usa el observable
+                  decoration: InputDecoration(
+                    hintText: 'Password',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    filled: true,
+                    fillColor: Colors.white,
+                    suffixIcon: IconButton(
+                      icon: Icon(controller.isPasswordVisible.value
+                          ? Icons.visibility
+                          : Icons.visibility_off),
+                      onPressed: controller.togglePasswordVisibility,
+                    ),
+                  ),
+                )),
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
-                onPressed: () {},
+                onPressed: () => Get.toNamed('/forgot-password'),
                 child: Text('Forgot your password?'),
               ),
             ),
             SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                minimumSize: Size(double.infinity, 50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: Text('Sign in', style: TextStyle(color: Colors.white)),
-            ),
+            Obx(() => ElevatedButton(
+                  onPressed: controller.authController.isLoading.value
+                      ? null
+                      : controller.signIn,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    minimumSize: Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: controller.authController.isLoading.value
+                      ? CircularProgressIndicator(color: Colors.white)
+                      : Text('Sign in', style: TextStyle(color: Colors.white)),
+                )),
             SizedBox(height: 20),
             Row(
               children: [
@@ -115,7 +133,7 @@ class SignInPage extends StatelessWidget {
             Spacer(),
             Center(
               child: TextButton(
-                onPressed: () {},
+                onPressed: () => Get.toNamed('/sign-up'),
                 child: Text("Don't have an account? Sign up"),
               ),
             ),
