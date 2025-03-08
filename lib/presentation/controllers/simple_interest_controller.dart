@@ -5,6 +5,7 @@ class SimpleInterestController extends ChangeNotifier {
   final TextEditingController rateController = TextEditingController();
   final TextEditingController timeController = TextEditingController();
   final TextEditingController futureValueController = TextEditingController();
+  final TextEditingController interestController = TextEditingController();
 
   String result = '';
   String selectedPeriod = 'Anual'; // Opción por defecto
@@ -30,6 +31,7 @@ class SimpleInterestController extends ChangeNotifier {
     double? rate = double.tryParse(rateController.text);
     double? time = double.tryParse(timeController.text);
     double? futureValue = double.tryParse(futureValueController.text);
+    double? interest = double.tryParse(interestController.text);
 
     if (rate != null) {
       rate /= 100; // Convertir porcentaje a decimal
@@ -43,7 +45,11 @@ class SimpleInterestController extends ChangeNotifier {
       }
     }
 
-    if (capital == null &&
+    if (interest == null && capital != null && futureValue != null) {
+      // Calcular el interés generado
+      interest = futureValue - capital;
+      result = 'El interés generado es: \$${interest.toStringAsFixed(2)}';
+    } else if (capital == null &&
         futureValue != null &&
         rate != null &&
         time != null) {
@@ -71,15 +77,40 @@ class SimpleInterestController extends ChangeNotifier {
       result = 'La tasa de interés es: ${(rate * 100).toStringAsFixed(2)}%';
     } else if (time == null &&
         capital != null &&
-        futureValue != null &&
+        interest != null &&
         rate != null) {
-      // Calcular el número de períodos
-      time = ((futureValue / capital) - 1) / rate;
-      result = 'El número de períodos es: ${time.toStringAsFixed(2)}';
+      // Calcular el tiempo necesario
+      time = interest / (capital * rate);
+
+      // Conversión a años, meses y días
+      int years = time.floor();
+      double fractionalYear = time - years;
+      int days = (fractionalYear * 360).round();
+      int months = (days / 30).floor();
+      days = days % 30;
+
+      result = 'El tiempo estimado es: $years años, $months meses, $days días';
+    } else if (capital == null &&
+        interest != null &&
+        rate != null &&
+        time != null) {
+      // Calcular el capital inicial cuando solo se tienen I, i y t
+      capital = interest / (rate * time);
+      result = 'El capital inicial es: \$${capital.toStringAsFixed(2)}';
     } else {
       result = 'Por favor, ingresa al menos tres valores.';
     }
 
+    notifyListeners();
+  }
+
+  void clearFields() {
+    capitalController.clear();
+    rateController.clear();
+    timeController.clear();
+    futureValueController.clear();
+    interestController.clear();
+    result = '';
     notifyListeners();
   }
 
@@ -89,6 +120,7 @@ class SimpleInterestController extends ChangeNotifier {
     rateController.dispose();
     timeController.dispose();
     futureValueController.dispose();
+    interestController.dispose();
     super.dispose();
   }
 }
