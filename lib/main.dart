@@ -7,9 +7,9 @@ import 'presentation/screens/forgotpasswor_screen.dart';
 import 'presentation/screens/home_screen.dart';
 import 'presentation/screens/sign_in_screen.dart';
 import 'presentation/screens/simple_interest_screen.dart';
+import 'presentation/screens/interest_rate_screen.dart';
 import 'firebase_options.dart';
 import 'core/middlewares/auth_middleware.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,16 +27,25 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'EcolApp',
-      initialRoute: FirebaseAuth.instance.currentUser == null ? '/sign-in' : '/dashboard',
+      initialRoute:
+          FirebaseAuth.instance.currentUser == null ? '/sign-in' : '/dashboard',
       getPages: [
         GetPage(name: '/sign-in', page: () => SignInPage()),
         GetPage(name: '/sign-up', page: () => SignUpPage()),
         GetPage(name: '/forgot-password', page: () => ForgotPasswordPage()),
-        GetPage(name: '/dashboard', 
+        GetPage(
+            name: '/dashboard',
             page: () => DashboardPage(),
             middlewares: [AuthMiddleware()]), // Protección con middleware
-        GetPage(name: '/simple-interest', page: () => const SimpleInterestScreen(),
+        GetPage(
+            name: '/simple-interest',
+            page: () => const SimpleInterestScreen(),
             middlewares: [AuthMiddleware()]), // Protección con middleware
+        GetPage(
+          name: '/interest-rate',
+          page: () => InterestRateScreen(),
+          middlewares: [AuthMiddleware()],
+        ),
       ],
     );
   }
