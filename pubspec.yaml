@@ -42,6 +42,8 @@ dependencies:
   firebase_auth: ^5.5.1 # Autenticación de usuarios
   google_sign_in: ^6.1.6 # Para iniciar sesión con Google (opcional)
   provider: ^6.1.2
+  fl_chart: ^0.66.2
+  cloud_firestore: ^5.6.5
 
 dev_dependencies:
   flutter_test:

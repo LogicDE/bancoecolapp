@@ -18,7 +18,7 @@ class ForgotPasswordPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Back button
+              // Botón de regreso
               Row(
                 children: [
                   IconButton(
@@ -26,19 +26,19 @@ class ForgotPasswordPage extends StatelessWidget {
                     onPressed: () => Get.back(),
                   ),
                   const SizedBox(width: 8),
-                  const Text("Forgot password",
+                  const Text("Recuperar contraseña",
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                 ],
               ),
               const SizedBox(height: 20),
 
-              // Input Field
+              // Campo de entrada para la cédula
               TextField(
-                controller: controller.emailController,
-                keyboardType: TextInputType.emailAddress,
+                controller: controller.cedulaController,
+                keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  hintText: "Enter your email",
+                  hintText: "Ingrese su cédula",
                   filled: true,
                   fillColor: Colors.grey.shade200,
                   border: OutlineInputBorder(
@@ -48,11 +48,12 @@ class ForgotPasswordPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              const Text("We'll send you a password reset link",
+              const Text(
+                  "Le enviaremos un enlace para restablecer su contraseña",
                   style: TextStyle(fontSize: 14, color: Colors.grey)),
               const SizedBox(height: 24),
 
-              // Send Button
+              // Botón de enviar
               ElevatedButton(
                 onPressed: controller.resetPassword,
                 style: ElevatedButton.styleFrom(
@@ -61,7 +62,7 @@ class ForgotPasswordPage extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12)),
                 ),
-                child: const Text("Send",
+                child: const Text("Enviar",
                     style: TextStyle(color: Colors.white, fontSize: 16)),
               ),
               const SizedBox(height: 16),
