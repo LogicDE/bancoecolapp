@@ -28,7 +28,7 @@ class SignUpPage extends StatelessWidget {
                       onPressed: () => Get.back(),
                     ),
                     SizedBox(width: 8),
-                    Text("Sign up",
+                    Text("Registro",
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.w500)),
                   ],
@@ -39,11 +39,11 @@ class SignUpPage extends StatelessWidget {
                 Center(
                   child: Column(
                     children: [
-                      Text("Welcome to us,",
+                      Text("Bienvenido a EcolApp",
                           style: TextStyle(
                               fontSize: 24, fontWeight: FontWeight.bold)),
                       SizedBox(height: 4),
-                      Text("Hello there, create new account",
+                      Text("Crea tu cuenta con tu cédula y contraseña",
                           style: TextStyle(fontSize: 14, color: Colors.grey)),
                     ],
                   ),
@@ -72,20 +72,20 @@ class SignUpPage extends StatelessWidget {
 
                 // Form fields
                 TextFormField(
+                  controller: controller.cedulaController,
+                  decoration: _inputDecoration("Cédula"),
+                  keyboardType: TextInputType.number,
+                ),
+                SizedBox(height: 12),
+                TextFormField(
                   controller: controller.emailController,
                   decoration: _inputDecoration("Email"),
                   keyboardType: TextInputType.emailAddress,
                 ),
                 SizedBox(height: 12),
                 TextFormField(
-                  controller: controller.phoneController,
-                  decoration: _inputDecoration("Phone number"),
-                  keyboardType: TextInputType.phone,
-                ),
-                SizedBox(height: 12),
-                TextFormField(
                   controller: controller.passwordController,
-                  decoration: _inputDecoration("Password"),
+                  decoration: _inputDecoration("Contraseña"),
                   obscureText: true,
                 ),
                 SizedBox(height: 12),
@@ -99,7 +99,7 @@ class SignUpPage extends StatelessWidget {
                         )),
                     Expanded(
                       child: Text(
-                          "By creating an account you agree to our Terms and Conditions",
+                          "Al crear una cuenta aceptas nuestros Términos y Condiciones",
                           style: TextStyle(fontSize: 12, color: Colors.grey)),
                     ),
                   ],
@@ -119,7 +119,7 @@ class SignUpPage extends StatelessWidget {
                       ),
                       child: controller.isLoading.value
                           ? CircularProgressIndicator(color: Colors.white)
-                          : Text("Sign up",
+                          : Text("Registrarse",
                               style:
                                   TextStyle(color: Colors.white, fontSize: 16)),
                     )),
@@ -132,7 +132,7 @@ class SignUpPage extends StatelessWidget {
                       Get.offNamed('/login');
                     },
                     child: Text(
-                      "Have an account? Sign in",
+                      "¿Ya tienes una cuenta? Inicia sesión",
                       style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,

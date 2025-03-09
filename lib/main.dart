@@ -8,6 +8,7 @@ import 'presentation/screens/home_screen.dart';
 import 'presentation/screens/sign_in_screen.dart';
 import 'presentation/screens/simple_interest_screen.dart';
 import 'presentation/screens/interest_rate_screen.dart';
+import 'presentation/screens/annuity_screen.dart';
 import 'firebase_options.dart';
 import 'core/middlewares/auth_middleware.dart';
 
@@ -46,6 +47,10 @@ class MyApp extends StatelessWidget {
           page: () => InterestRateScreen(),
           middlewares: [AuthMiddleware()],
         ),
+        GetPage(
+            name: '/annuities',
+            page: () => AnnuitiesPage(),
+            middlewares: [AuthMiddleware()]), // Protección con middleware
       ],
     );
   }

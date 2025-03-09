@@ -4,30 +4,33 @@ import '../../domain/usecases/auth_controller.dart';
 
 class ForgotPasswordController extends GetxController {
   final AuthController authController = Get.put(AuthController());
-  TextEditingController emailController = TextEditingController();
+  TextEditingController cedulaController = TextEditingController();
+  var isLoading =
+      false.obs; // 🔹 Agregar variable reactiva para control de estado
 
   void resetPassword() async {
-    String email = emailController.text.trim();
+    if (isLoading.value) return; // Evitar múltiples solicitudes
+    isLoading.value = true;
 
-    if (email.isEmpty || !email.contains('@')) {
-      Get.snackbar("Error", "Enter a valid email address",
+    try {
+      String cedula = cedulaController.text.trim();
+      if (cedula.isEmpty) {
+        Get.snackbar("Error", "Ingrese una cédula válida",
+            backgroundColor: Colors.red);
+        return;
+      }
+
+      bool success = await authController.resetPassword(cedula);
+      if (success) {
+        await Future.delayed(const Duration(seconds: 2));
+        Get.offAllNamed(
+            '/sign-in'); // 🔹 Redirigir solo si el correo fue enviado
+      }
+    } catch (e) {
+      Get.snackbar("Error", "No se pudo procesar la solicitud",
           backgroundColor: Colors.red);
-      return;
-    }
-
-    bool success = await authController.resetPassword(email);
-
-    if (success) {
-      Get.snackbar("Success", "Password reset link sent to $email");
-
-      // 🔹 Redirigir al usuario al Sign-In después de 2 segundos
-      Future.delayed(const Duration(seconds: 2), () {
-        Get.offNamed('/sign-in'); // Si usas rutas nombradas
-        // Get.off(() => SignInPage());  // Si navegas sin rutas nombradas
-      });
-    } else {
-      Get.snackbar("Error", "Failed to send password reset email",
-          backgroundColor: Colors.red);
+    } finally {
+      isLoading.value = false;
     }
   }
 }

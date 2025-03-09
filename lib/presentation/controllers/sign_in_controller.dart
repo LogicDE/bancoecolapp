@@ -5,7 +5,7 @@ import '../../domain/usecases/auth_controller.dart';
 class SignInController extends GetxController {
   final AuthController authController = Get.put(AuthController());
 
-  TextEditingController emailController = TextEditingController();
+  TextEditingController cedulaController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   var isPasswordVisible = false.obs;
 
@@ -14,6 +14,14 @@ class SignInController extends GetxController {
   }
 
   void signIn() {
-    authController.signIn(emailController.text, passwordController.text);
+    authController.signIn(
+        cedulaController.text.trim(), passwordController.text.trim());
+  }
+
+  @override
+  void onClose() {
+    cedulaController.dispose();
+    passwordController.dispose();
+    super.onClose();
   }
 }
