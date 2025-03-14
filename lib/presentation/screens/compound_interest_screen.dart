@@ -15,6 +15,18 @@ class CompoundInterestScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            Center(
+              child: Wrap(
+                runSpacing: 15,
+                spacing: 15,
+                children: [
+                  Image.asset('lib/presentation/images/ICCapital.png'),
+                  Image.asset('lib/presentation/images/ICInteres.png'),
+                  Image.asset('lib/presentation/images/ICMontoCompuesto.png')
+                ]
+              ),
+            ),
+
             _buildTextField(
                 controller.capitalController, "Capital Inicial (C)"),
             _buildTextField(
@@ -74,26 +86,33 @@ class CompoundInterestScreen extends StatelessWidget {
             SizedBox(height: 20),
 
             // Botón de Cálculo
-            ElevatedButton(
+            Center(
+              child:
+                ElevatedButton(
                 onPressed: controller.calcularMontoCompuesto,
                 child: Text("Calcular Monto Compuesto")),
-
             // Botones de Cálculos Inversos
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            ),
+            SizedBox(height: 10),
+          Wrap(
+              alignment: WrapAlignment.center, // Centra los botones
+              spacing: 10, // Espaciado entre los botones
+              runSpacing: 10,
               children: [
                 ElevatedButton(
-                    onPressed: controller.calcularCapital,
-                    child: Text("Calcular Capital")),
+                  onPressed: controller.calcularCapital,
+                  child: Text("Calcular Capital"),
+                ),
                 ElevatedButton(
-                    onPressed: controller.calcularTasaInteres,
-                    child: Text("Calcular Tasa")),
+                  onPressed: controller.calcularTasaInteres,
+                  child: Text("Calcular Tasa"),
+                ),
                 ElevatedButton(
-                    onPressed: controller.calcularTiempo,
-                    child: Text("Calcular Tiempo")),
+                  onPressed: controller.calcularTiempo,
+                  child: Text("Calcular Tiempo"),
+                ),
               ],
             ),
-
             SizedBox(height: 20),
 
             // Resultados
@@ -116,8 +135,8 @@ class CompoundInterestScreen extends StatelessWidget {
             SizedBox(height: 20),
 
             // Gráfico de Crecimiento
-            SizedBox(
-              height: 300,
+            Obx (() => SizedBox(
+              height:controller.chartData.isEmpty ? 20 : 300,
               child: Obx(() {
                 if (controller.chartData.isEmpty) {
                   return Center(child: Text("No hay datos aún"));
@@ -139,6 +158,7 @@ class CompoundInterestScreen extends StatelessWidget {
                   ],
                 );
               }),
+              ),
             ),
           ],
         ),

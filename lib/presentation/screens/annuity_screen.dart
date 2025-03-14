@@ -22,8 +22,21 @@ class _AnnuitiesPageState extends State<AnnuitiesPage> {
       appBar: AppBar(title: Text("Cálculo de Anualidades")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
+        child: SingleChildScrollView(
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height,
+            child: Column(
           children: [
+            Center(
+              child: Wrap(
+                runSpacing: 15,
+                spacing: 15,
+                children: [
+                  Image.asset('lib/presentation/images/AValorActual.png'),
+                  Image.asset('lib/presentation/images/AValorFinal.png')
+                ],
+              ),
+             ),
             TextField(
               controller: amountController,
               decoration: InputDecoration(labelText: "Pago (A)"),
@@ -134,6 +147,8 @@ class _AnnuitiesPageState extends State<AnnuitiesPage> {
             ),
           ],
         ),
+          )
+        )
       ),
     );
   }

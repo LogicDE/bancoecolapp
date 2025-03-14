@@ -72,10 +72,11 @@ class CompoundInterestController extends GetxController {
     montoCompuesto.value = capital.value * pow((1 + i), n);
     intereses.value = montoCompuesto.value - capital.value;
 
-    // Generar datos para la gráfica
-    chartData.assignAll(List.generate(n + 1, (t) {
+     List<double> nuevosDatos = List.generate(n + 1, (t) {
       return capital.value * pow((1 + i), t);
-    }));
+    });
+    // Generar datos para la gráfica
+    chartData.assignAll(nuevosDatos);
   }
 
   void calcularCapital() {

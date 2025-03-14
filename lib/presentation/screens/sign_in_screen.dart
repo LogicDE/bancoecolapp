@@ -17,39 +17,20 @@ class SignInPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 40),
-            Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: () => Get.back(),
-                ),
-                const Text(
-                  'Sign In',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
             const SizedBox(height: 20),
             Center(
               child: Column(
                 children: [
-                  Container(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: Colors.blue.shade100,
-                      shape: BoxShape.circle,
-                    ),
-                    child:
-                        const Icon(Iconsax.lock, size: 50, color: Colors.blue),
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundImage: AssetImage('lib/presentation/images/logoEcolapp.png'),
                   ),
                   const SizedBox(height: 16),
                   const Text(
-                    'Welcome Back',
+                    'Bienvenido a EcolApp',
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
-                  const Text('Hello there, sign in to continue'),
+                  const Text('Hola, ingresa tus datos para continuar'),
                 ],
               ),
             ),
@@ -69,7 +50,7 @@ class SignInPage extends StatelessWidget {
                   controller: controller.passwordController,
                   obscureText: !controller.isPasswordVisible.value,
                   decoration: InputDecoration(
-                    hintText: 'Password',
+                    hintText: 'Contraseña',
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12)),
                     filled: true,
@@ -86,7 +67,7 @@ class SignInPage extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: TextButton(
                 onPressed: () => Get.toNamed('/forgot-password'),
-                child: const Text('Forgot your password?'),
+                child: const Text('¿Olvidaste la contraseña?'),
               ),
             ),
             const SizedBox(height: 16),
@@ -103,7 +84,7 @@ class SignInPage extends StatelessWidget {
                   ),
                   child: controller.authController.isLoading.value
                       ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text('Sign in',
+                      : const Text('Ingresa',
                           style: TextStyle(color: Colors.white)),
                 )),
             const SizedBox(height: 20),
@@ -112,7 +93,7 @@ class SignInPage extends StatelessWidget {
                 Expanded(child: Divider()),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Text('or'),
+                  child: Text('o'),
                 ),
                 Expanded(child: Divider()),
               ],
@@ -127,13 +108,13 @@ class SignInPage extends StatelessWidget {
                 ),
               ),
               icon: const Icon(Icons.fingerprint),
-              label: const Text('Sign in with Touch ID'),
+              label: const Text('Ingresa con autenticación biométrica'),
             ),
             const Spacer(),
             Center(
               child: TextButton(
                 onPressed: () => Get.toNamed('/sign-up'),
-                child: const Text("Don't have an account? Sign up"),
+                child: const Text("¿No tienes cuenta? Registrate"),
               ),
             ),
           ],

@@ -43,7 +43,7 @@ class SignUpPage extends StatelessWidget {
                           style: TextStyle(
                               fontSize: 24, fontWeight: FontWeight.bold)),
                       SizedBox(height: 4),
-                      Text("Crea tu cuenta con tu cédula y contraseña",
+                      Text("Crea tu cuenta con tu cédula, correo y contraseña",
                           style: TextStyle(fontSize: 14, color: Colors.grey)),
                     ],
                   ),
@@ -52,21 +52,10 @@ class SignUpPage extends StatelessWidget {
 
                 // User icon
                 Center(
-                  child: Stack(
-                    children: [
-                      Container(
-                        height: 100,
-                        width: 100,
-                        decoration: BoxDecoration(
-                          color: Colors.blue.withOpacity(0.1),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                            child: Icon(Iconsax.user,
-                                size: 48, color: Colors.blue)),
-                      ),
-                    ],
-                  ),
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundImage: AssetImage('lib/presentation/images/logoEcolapp.png'),
+                  )
                 ),
                 SizedBox(height: 32),
 
@@ -95,7 +84,9 @@ class SignUpPage extends StatelessWidget {
                   children: [
                     Obx(() => Checkbox(
                           value: controller.isLoading.value,
-                          onChanged: (value) {},
+                          onChanged: (value) {
+                            controller.isLoading.value = value ?? false;
+                          },
                         )),
                     Expanded(
                       child: Text(
@@ -108,25 +99,25 @@ class SignUpPage extends StatelessWidget {
 
                 // Sign up button
                 Obx(() => ElevatedButton(
-                      onPressed: controller.isLoading.value
-                          ? null
-                          : () => controller.signUp(),
+                      onPressed: () => controller.signUp(),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue,
                         minimumSize: Size(double.infinity, 50),
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
+                                borderRadius: BorderRadius.circular(12)
+                              ),
                       ),
                       child: controller.isLoading.value
-                          ? CircularProgressIndicator(color: Colors.white)
-                          : Text("Registrarse",
+                          ? Text("Registrarse",
                               style:
-                                  TextStyle(color: Colors.white, fontSize: 16)),
+                                TextStyle(color: Colors.white, fontSize: 16)
+                            )
+                          : CircularProgressIndicator(color: Colors.white),
                     )),
                 SizedBox(height: 16),
 
                 // Sign in link
-                Center(
+                /*Center(
                   child: GestureDetector(
                     onTap: () {
                       Get.offNamed('/login');
@@ -139,7 +130,7 @@ class SignUpPage extends StatelessWidget {
                           color: Colors.blue),
                     ),
                   ),
-                ),
+                ),*/
               ],
             ),
           ),
@@ -152,9 +143,9 @@ class SignUpPage extends StatelessWidget {
     return InputDecoration(
       hintText: hint,
       filled: true,
-      fillColor: Colors.grey.shade200,
+      fillColor: Colors.white,
       border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+          borderRadius: BorderRadius.circular(12)),
     );
   }
 }

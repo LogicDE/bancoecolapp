@@ -66,10 +66,10 @@ class _DashboardPageState extends State<DashboardPage> {
                   ),
                   Row(
                     children: [
-                      IconButton(
+                      /*IconButton(
                         icon: const Icon(Iconsax.notification, size: 28),
                         onPressed: () {},
-                      ),
+                      ),*/
                       IconButton(
                         icon: const Icon(Iconsax.logout,
                             size: 28, color: Colors.red),
@@ -80,7 +80,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 ],
               ),
               const SizedBox(height: 20),
-              Container(
+              /*Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -102,7 +102,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         style: TextStyle(color: Colors.grey)),
                   ],
                 ),
-              ),
+              ),*/
               const SizedBox(height: 20),
               Expanded(
                 child: GridView.builder(
