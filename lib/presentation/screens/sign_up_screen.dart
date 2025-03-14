@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import '../controllers/sign_up_controller.dart';
-import '../widgets/customTextField.dart';
 
 class SignUpPage extends StatelessWidget {
   const SignUpPage({super.key});
@@ -118,7 +117,7 @@ class SignUpPage extends StatelessWidget {
                 SizedBox(height: 16),
 
                 // Sign in link
-                Center(
+                /*Center(
                   child: GestureDetector(
                     onTap: () {
                       Get.offNamed('/login');
@@ -131,7 +130,7 @@ class SignUpPage extends StatelessWidget {
                           color: Colors.blue),
                     ),
                   ),
-                ),
+                ),*/
               ],
             ),
           ),
@@ -144,9 +143,9 @@ class SignUpPage extends StatelessWidget {
     return InputDecoration(
       hintText: hint,
       filled: true,
-      fillColor: Colors.grey.shade200,
+      fillColor: Colors.white,
       border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+          borderRadius: BorderRadius.circular(12)),
     );
   }
 }

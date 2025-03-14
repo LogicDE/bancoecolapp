@@ -15,6 +15,18 @@ class CompoundInterestScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            Center(
+              child: Wrap(
+                runSpacing: 15,
+                spacing: 15,
+                children: [
+                  Image.asset('lib/presentation/images/ICCapital.png'),
+                  Image.asset('lib/presentation/images/ICInteres.png'),
+                  Image.asset('lib/presentation/images/ICMontoCompuesto.png')
+                ]
+              ),
+            ),
+
             _buildTextField(
                 controller.capitalController, "Capital Inicial (C)"),
             _buildTextField(
@@ -123,8 +135,8 @@ class CompoundInterestScreen extends StatelessWidget {
             SizedBox(height: 20),
 
             // Gráfico de Crecimiento
-            SizedBox(
-              height: 20,
+            Obx (() => SizedBox(
+              height:controller.chartData.isEmpty ? 20 : 300,
               child: Obx(() {
                 if (controller.chartData.isEmpty) {
                   return Center(child: Text("No hay datos aún"));
@@ -146,6 +158,7 @@ class CompoundInterestScreen extends StatelessWidget {
                   ],
                 );
               }),
+              ),
             ),
           ],
         ),
