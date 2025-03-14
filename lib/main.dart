@@ -9,6 +9,7 @@ import 'presentation/screens/sign_in_screen.dart';
 import 'presentation/screens/simple_interest_screen.dart';
 import 'presentation/screens/interest_rate_screen.dart';
 import 'presentation/screens/annuity_screen.dart';
+import 'presentation/screens/compound_interest_screen.dart';
 import 'firebase_options.dart';
 import 'core/middlewares/auth_middleware.dart';
 
@@ -51,6 +52,11 @@ class MyApp extends StatelessWidget {
             name: '/annuities',
             page: () => AnnuitiesPage(),
             middlewares: [AuthMiddleware()]), // Protección con middleware
+        GetPage(
+          name: '/compound-interest',
+          page: () => CompoundInterestScreen(),
+          middlewares: [AuthMiddleware()],
+        ),
       ],
     );
   }
