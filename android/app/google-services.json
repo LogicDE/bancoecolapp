@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "36183839050",
+    "project_id": "ecolapp-2754d",
+    "storage_bucket": "ecolapp-2754d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:36183839050:android:f52e30a5f914176d14f1b3",
+        "android_client_info": {
+          "package_name": "banco.ecolapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDn53CC4bqtArbXLMSrQI4dnb62qzSy1go"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:36183839050:android:01a1285f5266ff1514f1b3",
+        "android_client_info": {
+          "package_name": "com.example.bancosbase"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDn53CC4bqtArbXLMSrQI4dnb62qzSy1go"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
