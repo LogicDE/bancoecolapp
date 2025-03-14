@@ -105,7 +105,8 @@ class SignUpPage extends StatelessWidget {
                         backgroundColor: Colors.blue,
                         minimumSize: Size(double.infinity, 50),
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
+                                borderRadius: BorderRadius.circular(12)
+                              ),
                       ),
                       child: controller.isLoading.value
                           ? Text("Registrarse",
