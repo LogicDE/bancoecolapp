@@ -26,7 +26,7 @@ class InterestRateScreen extends StatelessWidget {
                 if (controller.selectedType.value == 'Simple' )
                   Image.asset('lib/presentation/images/ISInteres.png')
                 else
-                  Image.asset('lib/presentation/images/ICTasaInteres.png')
+                  Image.asset('lib/presentation/images/ICInteres.png')
               ]  
             )),
             Obx(() => Text(
