@@ -12,14 +12,13 @@ class InterestRateScreen extends StatelessWidget {
         title: const Text('Cálculo de Tasa de Interés'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Get.back(); // Regresa al DashboardPage
-          },
+          onPressed: () => Get.back(),
         ),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Obx(() => Text(
                   'Modo: ${controller.selectedType.value}',
@@ -27,70 +26,22 @@ class InterestRateScreen extends StatelessWidget {
                       fontSize: 18, fontWeight: FontWeight.bold),
                 )),
             const SizedBox(height: 10),
-            TextField(
-              controller: controller.presentValueController,
-              decoration:
-                  const InputDecoration(labelText: 'Valor Presente (VP o C)'),
-              keyboardType: TextInputType.number,
-            ),
-            TextField(
-              controller: controller.futureValueController,
-              decoration:
-                  const InputDecoration(labelText: 'Valor Futuro (VF o MC)'),
-              keyboardType: TextInputType.number,
-            ),
-            TextField(
-              controller: controller.timeController,
-              decoration: const InputDecoration(labelText: 'Tiempo (t o n)'),
-              keyboardType: TextInputType.number,
-            ),
-            Obx(() => TextField(
-                  controller: controller.interestController,
-                  decoration:
-                      const InputDecoration(labelText: 'Interés generado (I)'),
-                  keyboardType: TextInputType.number,
+            _buildTextField(
+                controller.presentValueController, 'Valor Presente (VP o C)'),
+            _buildTextField(
+                controller.futureValueController, 'Valor Futuro (VF o MC)'),
+            _buildTextField(controller.timeController, 'Tiempo (t o n)'),
+            Obx(() => _buildTextField(
+                  controller.interestController,
+                  'Interés generado (I)',
                   enabled: controller.selectedType.value == 'Simple',
                 )),
             const SizedBox(height: 10),
-            Obx(() => DropdownButton<String>(
-                  value: controller.selectedTimeUnit.value,
-                  onChanged: (String? newValue) {
-                    if (newValue != null) {
-                      controller.setTimeUnit(newValue);
-                    }
-                  },
-                  items: <String>['Años', 'Meses', 'Días']
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                )),
+            _buildDropdown(),
             const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    controller.setType('Simple');
-                  },
-                  child: const Text('Interés Simple'),
-                ),
-                const SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    controller.setType('Compuesto');
-                  },
-                  child: const Text('Interés Compuesto'),
-                ),
-              ],
-            ),
+            _buildModeButtons(),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () => controller.calculate(),
-              child: const Text('Calcular'),
-            ),
+            _buildCalculateButton(),
             const SizedBox(height: 20),
             Obx(() => Text(
                   controller.result.value,
@@ -98,6 +49,73 @@ class InterestRateScreen extends StatelessWidget {
                       fontSize: 20, fontWeight: FontWeight.bold),
                 )),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String label,
+      {bool enabled = true}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          border: OutlineInputBorder(),
+        ),
+        keyboardType: TextInputType.number,
+        enabled: enabled,
+      ),
+    );
+  }
+
+  Widget _buildDropdown() {
+    return Obx(() => DropdownButtonFormField<String>(
+          value: controller.selectedTimeUnit.value,
+          onChanged: (String? newValue) {
+            if (newValue != null) controller.setTimeUnit(newValue);
+          },
+          items: ['Años', 'Meses', 'Días']
+              .map(
+                  (value) => DropdownMenuItem(value: value, child: Text(value)))
+              .toList(),
+          decoration: const InputDecoration(
+            labelText: 'Unidad de Tiempo',
+            border: OutlineInputBorder(),
+          ),
+        ));
+  }
+
+  Widget _buildModeButtons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _buildModeButton('Interés Simple', 'Simple'),
+        const SizedBox(width: 10),
+        _buildModeButton('Interés Compuesto', 'Compuesto'),
+      ],
+    );
+  }
+
+  Widget _buildModeButton(String text, String type) {
+    return ElevatedButton(
+      onPressed: () => controller.setType(type),
+      child: Text(text),
+      style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12)),
+    );
+  }
+
+  Widget _buildCalculateButton() {
+    return Center(
+      child: ElevatedButton.icon(
+        onPressed: () => controller.calculate(),
+        icon: const Icon(Icons.calculate),
+        label: const Text('Calcular'),
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ),
     );

@@ -30,40 +30,9 @@ class SimpleInterestScreen extends StatelessWidget {
                     _buildTextField(
                         controller.interestController, 'Interés Generado (I)'),
                     const SizedBox(height: 10),
-                    const Text('Periodo de la tasa de interés:'),
-                    DropdownButton<String>(
-                      value: controller.selectedPeriod,
-                      isExpanded: true,
-                      items: controller.periodFactors.keys.map((String period) {
-                        return DropdownMenuItem<String>(
-                          value: period,
-                          child: Text(period),
-                        );
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        if (newValue != null) {
-                          controller.setPeriod(newValue);
-                        }
-                      },
-                    ),
+                    _buildDropdown(controller),
                     const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ElevatedButton(
-                          onPressed: controller.calculate,
-                          child: const Text('Calcular'),
-                        ),
-                        ElevatedButton(
-                          onPressed: controller.clearFields,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.redAccent,
-                          ),
-                          child: const Text('Limpiar',
-                              style: TextStyle(color: Colors.white)),
-                        ),
-                      ],
-                    ),
+                    _buildButtons(controller),
                     const SizedBox(height: 20),
                     Center(
                       child: Text(
@@ -94,6 +63,47 @@ class SimpleInterestScreen extends StatelessWidget {
         ),
         keyboardType: TextInputType.number,
       ),
+    );
+  }
+
+  Widget _buildDropdown(SimpleInterestController controller) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('Periodo de la tasa de interés:'),
+        DropdownButton<String>(
+          value: controller.selectedPeriod,
+          isExpanded: true,
+          items: controller.periodFactors.keys.map((String period) {
+            return DropdownMenuItem<String>(
+              value: period,
+              child: Text(period),
+            );
+          }).toList(),
+          onChanged: (String? newValue) {
+            if (newValue != null) {
+              controller.setPeriod(newValue);
+            }
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildButtons(SimpleInterestController controller) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        ElevatedButton(
+          onPressed: controller.calculate,
+          child: const Text('Calcular'),
+        ),
+        ElevatedButton(
+          onPressed: controller.clearFields,
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+          child: const Text('Limpiar', style: TextStyle(color: Colors.white)),
+        ),
+      ],
     );
   }
 }
