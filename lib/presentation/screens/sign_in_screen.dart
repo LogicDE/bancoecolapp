@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
 import '../controllers/sign_in_controller.dart';
 
 class SignInPage extends StatelessWidget {
@@ -23,7 +22,8 @@ class SignInPage extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 50,
-                    backgroundImage: AssetImage('lib/presentation/images/logoEcolapp.png'),
+                    backgroundImage:
+                        AssetImage('lib/presentation/images/logoEcolapp.png'),
                   ),
                   const SizedBox(height: 16),
                   const Text(
