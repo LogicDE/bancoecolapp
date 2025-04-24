@@ -1,0 +1,2 @@
+C:/Users/themo/bancosbase/android/app/.cxx/RelWithDebInfo/3j6e413z/x86/CMakeFiles/edit_cache.dir
+C:/Users/themo/bancosbase/android/app/.cxx/RelWithDebInfo/3j6e413z/x86/CMakeFiles/rebuild_cache.dir
