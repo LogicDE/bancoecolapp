@@ -11,12 +11,22 @@ class AnnuitiesPage extends StatefulWidget {
 
 class _AnnuitiesPageState extends State<AnnuitiesPage> {
   final AnnuityController controller = Get.put(AnnuityController());
-  final TextEditingController amountController = TextEditingController();
-  final TextEditingController rateController = TextEditingController();
-  final TextEditingController periodsController = TextEditingController();
-  final TextEditingController futureValueController = TextEditingController();
+
+  final amountController = TextEditingController();
+  final rateController = TextEditingController();
+  final periodsController = TextEditingController();
+  final futureValueController = TextEditingController();
+
   String selectedCapitalization = 'Anual';
   String selectedPaymentFrequency = 'Mensual';
+
+  final List<String> options = [
+    'Anual',
+    'Semestral',
+    'Trimestral',
+    'Cuatrimestral',
+    'Mensual'
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -25,16 +35,12 @@ class _AnnuitiesPageState extends State<AnnuitiesPage> {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            _buildImageSection(),
             _buildInputFields(),
-            const SizedBox(height: 10),
             _buildDropdowns(),
-            const SizedBox(height: 20),
             _buildActionButtons(),
-            const SizedBox(height: 20),
             _buildResults(),
-            const SizedBox(height: 20),
             _buildChart(),
           ],
         ),
@@ -42,7 +48,15 @@ class _AnnuitiesPageState extends State<AnnuitiesPage> {
     );
   }
 
-  /// 🟢 **Campos de entrada organizados en un `Card`**
+  Widget _buildImageSection() {
+    return Center(
+      child: ImageWrap(imagePaths: [
+        'lib/presentation/images/AValorActual.png',
+        'lib/presentation/images/AValorFinal.png',
+      ]),
+    );
+  }
+
   Widget _buildInputFields() {
     return Card(
       elevation: 3,
@@ -61,79 +75,60 @@ class _AnnuitiesPageState extends State<AnnuitiesPage> {
     );
   }
 
-  /// 🟢 **Campo de texto con diseño reutilizable**
   Widget _buildTextField(TextEditingController controller, String label) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextField(
         controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          border: OutlineInputBorder(),
-        ),
+        decoration:
+            InputDecoration(labelText: label, border: OutlineInputBorder()),
         keyboardType: TextInputType.number,
       ),
     );
   }
 
-  /// 🟢 **Dropdowns organizados**
   Widget _buildDropdowns() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildDropdown("Frecuencia de Capitalización", selectedCapitalization,
+              (val) => setState(() => selectedCapitalization = val)),
+          SizedBox(height: 10),
+          _buildDropdown("Frecuencia de Pago", selectedPaymentFrequency,
+              (val) => setState(() => selectedPaymentFrequency = val)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDropdown(
+      String label, String currentValue, Function(String) onChanged) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Frecuencia de Capitalización"),
+        Text(label),
         DropdownButton<String>(
-          value: selectedCapitalization,
-          onChanged: (newValue) =>
-              setState(() => selectedCapitalization = newValue!),
-          items: _buildDropdownItems(),
-        ),
-        const SizedBox(height: 10),
-        Text("Frecuencia de Pago"),
-        DropdownButton<String>(
-          value: selectedPaymentFrequency,
-          onChanged: (newValue) =>
-              setState(() => selectedPaymentFrequency = newValue!),
-          items: _buildDropdownItems(),
+          value: currentValue,
+          onChanged: (newValue) => onChanged(newValue!),
+          items: options
+              .map((val) => DropdownMenuItem(value: val, child: Text(val)))
+              .toList(),
         ),
       ],
     );
   }
 
-  List<DropdownMenuItem<String>> _buildDropdownItems() {
-    return ['Anual', 'Semestral', 'Trimestral', 'Cuatrimestral', 'Mensual']
-        .map((value) => DropdownMenuItem(value: value, child: Text(value)))
-        .toList();
-  }
-
-  /// 🟢 **Botones bien organizados con `Wrap` para evitar overflow**
   Widget _buildActionButtons() {
     return Wrap(
       spacing: 10,
       runSpacing: 10,
       alignment: WrapAlignment.center,
       children: [
-        _buildButton("Calcular Anualidad", Icons.calculate, () {
-          double A = double.tryParse(amountController.text) ?? 0;
-          double annualRate = double.tryParse(rateController.text) ?? 0;
-          int years = int.tryParse(periodsController.text) ?? 0;
-          if (A > 0 && annualRate >= 0 && years > 0) {
-            controller.calculateAnnuity(A, annualRate, years,
-                selectedCapitalization, selectedPaymentFrequency);
-          } else {
-            Get.snackbar("Error", "Ingrese valores válidos");
-          }
-        }),
-        _buildButton("Calcular Tasa", Icons.percent, () {
-          double A = double.tryParse(amountController.text) ?? 0;
-          double VF = double.tryParse(futureValueController.text) ?? 0;
-          int years = int.tryParse(periodsController.text) ?? 0;
-          if (A > 0 && VF > 0 && years > 0) {
-            controller.calculateAnnuityRate(A, VF, years);
-          } else {
-            Get.snackbar("Error", "Ingrese valores válidos para la tasa");
-          }
-        }),
+        _buildButton(
+            "Calcular Anualidad", Icons.calculate, _onCalculateAnnuity),
+        _buildButton("Calcular Tasa", Icons.percent, _onCalculateRate),
       ],
     );
   }
@@ -146,110 +141,40 @@ class _AnnuitiesPageState extends State<AnnuitiesPage> {
     );
   }
 
-  /// 🟢 **Resultados dentro de un `Card` para mejor visualización**
+  void _onCalculateAnnuity() {
+    double A = double.tryParse(amountController.text) ?? 0;
+    double rate = double.tryParse(rateController.text) ?? 0;
+    int years = int.tryParse(periodsController.text) ?? 0;
+    if (A > 0 && rate >= 0 && years > 0) {
+      controller.calculateAnnuity(
+          A, rate, years, selectedCapitalization, selectedPaymentFrequency);
+    } else {
+      Get.snackbar("Error", "Ingrese valores válidos");
+    }
+  }
+
+  void _onCalculateRate() {
+    double A = double.tryParse(amountController.text) ?? 0;
+    double VF = double.tryParse(futureValueController.text) ?? 0;
+    int years = int.tryParse(periodsController.text) ?? 0;
+    if (A > 0 && VF > 0 && years > 0) {
+      controller.calculateAnnuityRate(A, VF, years);
+    } else {
+      Get.snackbar("Error", "Ingrese valores válidos para la tasa");
+    }
+  }
+
   Widget _buildResults() {
     return Card(
+      margin: const EdgeInsets.only(top: 16),
       elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Obx(() => _buildResultText(
-        child: SingleChildScrollView(
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height,
-            child: Column(
-          children: [
-            Center(
-              child: ImageWrap(
-                      imagePaths: [
-                        'lib/presentation/images/AValorActual.png',
-                        'lib/presentation/images/AValorFinal.png'
-                      ]
-                    ),
-             ),
-            TextField(
-              controller: amountController,
-              decoration: InputDecoration(labelText: "Pago (A)"),
-              keyboardType: TextInputType.number,
-            ),
-            TextField(
-              controller: rateController,
-              decoration:
-                  InputDecoration(labelText: "Tasa de interés anual (%)"),
-              keyboardType: TextInputType.number,
-            ),
-            TextField(
-              controller: periodsController,
-              decoration: InputDecoration(labelText: "Duración (años)"),
-              keyboardType: TextInputType.number,
-            ),
-            SizedBox(height: 10),
-            Text("Frecuencia de Capitalización"),
-            DropdownButton<String>(
-              value: selectedCapitalization,
-              onChanged: (String? newValue) {
-                if (newValue != null) {
-                  setState(() {
-                    selectedCapitalization = newValue;
-                  });
-                }
-              },
-              items: [
-                'Anual',
-                'Semestral',
-                'Trimestral',
-                'Cuatrimestral',
-                'Mensual'
-              ].map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
-            SizedBox(height: 10),
-            Text("Frecuencia de Pago"),
-            DropdownButton<String>(
-              value: selectedPaymentFrequency,
-              onChanged: (String? newValue) {
-                if (newValue != null) {
-                  setState(() {
-                    selectedPaymentFrequency = newValue;
-                  });
-                }
-              },
-              items: [
-                'Anual',
-                'Semestral',
-                'Trimestral',
-                'Cuatrimestral',
-                'Mensual'
-              ].map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                double A = double.tryParse(amountController.text) ?? 0;
-                double annualRate = double.tryParse(rateController.text) ?? 0;
-                int years = int.tryParse(periodsController.text) ?? 0;
-                if (A > 0 && annualRate >= 0 && years > 0) {
-                  controller.calculateAnnuity(A, annualRate, years,
-                      selectedCapitalization, selectedPaymentFrequency);
-                } else {
-                  Get.snackbar("Error", "Ingrese valores válidos");
-                }
-              },
-              child: Text("Calcular"),
-            ),
-            SizedBox(height: 20),
-            Obx(() => Text(
                 "Valor Futuro: \$${controller.futureValue.value.toStringAsFixed(2)}")),
             Obx(() => _buildResultText(
                 "Valor Presente: \$${controller.presentValue.value.toStringAsFixed(2)}")),
@@ -257,8 +182,6 @@ class _AnnuitiesPageState extends State<AnnuitiesPage> {
                 "Tasa de Interés: ${controller.rate.value.toStringAsFixed(6)}%")),
           ],
         ),
-          )
-        )
       ),
     );
   }
@@ -271,31 +194,28 @@ class _AnnuitiesPageState extends State<AnnuitiesPage> {
     );
   }
 
-  /// 🟢 **Gráfica con `Expanded` para mejor distribución del espacio**
   Widget _buildChart() {
     return SizedBox(
       height: 250,
-      child: Obx(
-        () => LineChart(
-          LineChartData(
-            titlesData: FlTitlesData(show: false),
-            borderData: FlBorderData(show: false),
-            gridData: FlGridData(show: false),
-            lineBarsData: [
-              LineChartBarData(
-                spots: controller.annuityProgression
-                    .asMap()
-                    .entries
-                    .map((entry) => FlSpot(entry.key.toDouble(), entry.value))
-                    .toList(),
-                isCurved: true,
-                color: Colors.blue,
-                dotData: FlDotData(show: false),
-              ),
-            ],
-          ),
-        ),
-      ),
+      child: Obx(() => LineChart(
+            LineChartData(
+              titlesData: FlTitlesData(show: false),
+              borderData: FlBorderData(show: false),
+              gridData: FlGridData(show: false),
+              lineBarsData: [
+                LineChartBarData(
+                  spots: controller.annuityProgression
+                      .asMap()
+                      .entries
+                      .map((entry) => FlSpot(entry.key.toDouble(), entry.value))
+                      .toList(),
+                  isCurved: true,
+                  color: Colors.blue,
+                  dotData: FlDotData(show: false),
+                ),
+              ],
+            ),
+          )),
     );
   }
 }
