@@ -1,3 +1,4 @@
+import 'package:bancosbase/presentation/widgets/image_wrap.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -16,13 +17,11 @@ class CompoundInterestScreen extends StatelessWidget {
         child: Column(
           children: [
             Center(
-              child: Wrap(
-                runSpacing: 15,
-                spacing: 15,
-                children: [
-                  Image.asset('lib/presentation/images/ICCapital.png'),
-                  Image.asset('lib/presentation/images/ICInteres.png'),
-                  Image.asset('lib/presentation/images/ICMontoCompuesto.png')
+              child: ImageWrap(
+                imagePaths: [
+                  'lib/presentation/images/ICCapital.png',
+                  'lib/presentation/images/ICInteres.png',
+                  'lib/presentation/images/ICMontoCompuesto.png'
                 ]
               ),
             ),

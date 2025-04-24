@@ -1,3 +1,4 @@
+import 'package:bancosbase/presentation/widgets/image_wrap.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -28,14 +29,12 @@ class _AnnuitiesPageState extends State<AnnuitiesPage> {
             child: Column(
           children: [
             Center(
-              child: Wrap(
-                runSpacing: 15,
-                spacing: 15,
-                children: [
-                  Image.asset('lib/presentation/images/AValorActual.png'),
-                  Image.asset('lib/presentation/images/AValorFinal.png')
-                ],
-              ),
+              child: ImageWrap(
+                      imagePaths: [
+                        'lib/presentation/images/AValorActual.png',
+                        'lib/presentation/images/AValorFinal.png'
+                      ]
+                    ),
              ),
             TextField(
               controller: amountController,
