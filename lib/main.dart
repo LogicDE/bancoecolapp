@@ -10,6 +10,7 @@ import 'presentation/screens/simple_interest_screen.dart';
 import 'presentation/screens/interest_rate_screen.dart';
 import 'presentation/screens/annuity_screen.dart';
 import 'presentation/screens/compound_interest_screen.dart';
+import 'presentation/screens/gradients_screen.dart';
 import 'firebase_options.dart';
 import 'core/middlewares/auth_middleware.dart';
 
@@ -57,6 +58,26 @@ class MyApp extends StatelessWidget {
           page: () => CompoundInterestScreen(),
           middlewares: [AuthMiddleware()],
         ),
+        GetPage(
+          name: '/gradients', // Ruta para la nueva página
+          page: () => GradientsPage(),
+          middlewares: [AuthMiddleware()], // Protege la página si es necesario
+        ),
+        // GetPage(
+        //   name: '/amortization',
+        //   page: () => AmortizationScreen(),
+        //   middlewares: [AuthMiddleware()],
+        // ),
+        // GetPage(
+        //   name: '/profile',
+        //   page: () => ProfileScreen(),
+        //   middlewares: [AuthMiddleware()],
+        // ),
+        // GetPage(
+        //   name: '/settings',
+        //   page: () => SettingsScreen(),
+        //   middlewares: [AuthMiddleware()],
+        // ),
       ],
     );
   }

@@ -28,6 +28,10 @@ class _DashboardPageState extends State<DashboardPage> {
       "route": "/compound-interest"
     },
     {"icon": Iconsax.wallet, "label": "Anualidades", "route": "/annuities"},
+    {"icon": Iconsax.status_up, "label": "Gradientes", "route": "/gradients"},
+    {"icon": Iconsax.money, "label": "Amortizacion", "route": "/amortization"},
+    {"icon": Iconsax.user, "label": "Perfil", "route": "/profile"},
+    {"icon": Iconsax.settings, "label": "Configuración", "route": "/settings"},
   ];
 
   void _logout() async {
