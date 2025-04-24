@@ -32,8 +32,17 @@ class _DashboardPageState extends State<DashboardPage> {
     {"icon": Iconsax.money, "label": "Amortizacion", "route": "/amortization"},
     {"icon": Iconsax.user, "label": "Perfil", "route": "/profile"},
     {"icon": Iconsax.settings, "label": "Configuración", "route": "/settings"},
+    {
+      "icon": Iconsax.wallet, 
+      "label": "Anualidades", 
+      "route": "/annuities"
+    },
+    {
+      "icon": Iconsax.activity,
+      "label": "Gradiente aritmético",
+      "route": "/aritmetic-gradient"
+    },
   ];
-
   void _logout() async {
     await FirebaseAuth.instance.signOut();
     Get.offAllNamed("/sign-in");
@@ -83,8 +92,10 @@ class _DashboardPageState extends State<DashboardPage> {
                       IconButton(
                         icon: const Icon(Iconsax.notification,
                             size: 28, color: Colors.black54),
+                      /*IconButton(
+                        icon: const Icon(Iconsax.notification, size: 28),
                         onPressed: () {},
-                      ),
+                      ),*/
                       IconButton(
                         icon: const Icon(Iconsax.logout,
                             size: 28, color: Colors.red),
@@ -95,9 +106,9 @@ class _DashboardPageState extends State<DashboardPage> {
                 ],
               ),
               const SizedBox(height: 20),
-
               // Tarjeta de balance
               Container(
+              /*Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -124,7 +135,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         style: TextStyle(color: Colors.white70)),
                   ],
                 ),
-              ),
+              ),*/
               const SizedBox(height: 20),
 
               // Grid de opciones

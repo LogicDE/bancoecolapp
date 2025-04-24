@@ -20,6 +20,14 @@ class InterestRateScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Obx(() => Wrap(
+              children: [
+                if (controller.selectedType.value == 'Simple' )
+                  Image.asset('lib/presentation/images/ISInteres.png')
+                else
+                  Image.asset('lib/presentation/images/ICInteres.png')
+              ]  
+            )),
             Obx(() => Text(
                   'Modo: ${controller.selectedType.value}',
                   style: const TextStyle(

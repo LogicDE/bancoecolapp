@@ -59,25 +59,10 @@ class MyApp extends StatelessWidget {
           middlewares: [AuthMiddleware()],
         ),
         GetPage(
-          name: '/gradients', // Ruta para la nueva página
+        name: '/gradients', // Ruta para la nueva página
           page: () => GradientsPage(),
           middlewares: [AuthMiddleware()], // Protege la página si es necesario
         ),
-        // GetPage(
-        //   name: '/amortization',
-        //   page: () => AmortizationScreen(),
-        //   middlewares: [AuthMiddleware()],
-        // ),
-        // GetPage(
-        //   name: '/profile',
-        //   page: () => ProfileScreen(),
-        //   middlewares: [AuthMiddleware()],
-        // ),
-        // GetPage(
-        //   name: '/settings',
-        //   page: () => SettingsScreen(),
-        //   middlewares: [AuthMiddleware()],
-        // ),
       ],
     );
   }

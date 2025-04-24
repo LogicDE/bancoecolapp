@@ -55,6 +55,23 @@ class SignUpPage extends StatelessWidget {
                       ),
                     ],
                   ),
+                      Text("Bienvenido a EcolApp",
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.bold)),
+                      SizedBox(height: 4),
+                      Text("Crea tu cuenta con tu cédula, correo y contraseña",
+                          style: TextStyle(fontSize: 14, color: Colors.grey)),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 32),
+
+                // User icon
+                Center(
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundImage: AssetImage('lib/presentation/images/logoEcolapp.png'),
+                  )
                 ),
                 const SizedBox(height: 32),
                 _buildTextField(controller.cedulaController, "Cédula",
@@ -76,6 +93,13 @@ class SignUpPage extends StatelessWidget {
                       ),
                     ),
                     const Expanded(
+                    Obx(() => Checkbox(
+                          value: controller.isLoading.value,
+                          onChanged: (value) {
+                            controller.isLoading.value = value ?? false;
+                          },
+                        )),
+                    Expanded(
                       child: Text(
                         "Al crear una cuenta aceptas nuestros Términos y Condiciones",
                         style: TextStyle(fontSize: 12, color: Colors.grey),
@@ -107,12 +131,40 @@ class SignUpPage extends StatelessWidget {
                   child: TextButton(
                     onPressed: () => Get.toNamed('/sign-in'),
                     child: const Text(
+                SizedBox(height: 20),
+
+                // Sign up button
+                Obx(() => ElevatedButton(
+                      onPressed: () => controller.signUp(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        minimumSize: Size(double.infinity, 50),
+                        shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)
+                              ),
+                      ),
+                      child: controller.isLoading.value
+                          ? Text("Registrarse",
+                              style:
+                                TextStyle(color: Colors.white, fontSize: 16)
+                            )
+                          : CircularProgressIndicator(color: Colors.white),
+                    )),
+                SizedBox(height: 16),
+
+                // Sign in link
+                /*Center(
+                  child: GestureDetector(
+                    onTap: () {
+                      Get.offNamed('/login');
+                    },
+                    child: Text(
                       "¿Ya tienes una cuenta? Inicia sesión",
                       style:
                           TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                     ),
                   ),
-                ),
+                ),*/
               ],
             ),
           ),
@@ -120,7 +172,6 @@ class SignUpPage extends StatelessWidget {
       ),
     );
   }
-
   Widget _buildTextField(
       TextEditingController controller, String hint, TextInputType inputType,
       {bool obscureText = false}) {
@@ -137,6 +188,13 @@ class SignUpPage extends StatelessWidget {
           borderSide: BorderSide.none,
         ),
       ),
+  InputDecoration _inputDecoration(String hint) {
+    return InputDecoration(
+      hintText: hint,
+      filled: true,
+      fillColor: Colors.white,
+      border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12)),
     );
   }
 }

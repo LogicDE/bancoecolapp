@@ -19,6 +19,18 @@ class SimpleInterestScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Wrap(
+                      spacing: 15,
+                      runSpacing: 15,
+                      children: [
+                        Image.asset('lib/presentation/images/ISMonto.png'),
+                        Image.asset('lib/presentation/images/ISValorFinal.png'),
+                        Image.asset('lib/presentation/images/ISTiempo.png'),
+                        Image.asset('lib/presentation/images/ISValorPresente.png'),
+                      ],
+                    ),
+                    SizedBox(height: 20),
+                    
                     _buildTextField(
                         controller.futureValueController, 'Monto Futuro (F)'),
                     _buildTextField(
