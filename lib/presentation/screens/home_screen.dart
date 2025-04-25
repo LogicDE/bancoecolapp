@@ -32,11 +32,6 @@ class _DashboardPageState extends State<DashboardPage> {
     {"icon": Iconsax.money, "label": "Amortización", "route": "/amortization"},
     {"icon": Iconsax.user, "label": "Perfil", "route": "/profile"},
     {"icon": Iconsax.settings, "label": "Configuración", "route": "/settings"},
-    {
-      "icon": Iconsax.activity,
-      "label": "Gradiente Aritmético",
-      "route": "/aritmetic-gradient"
-    },
   ];
 
   void _logout() async {
