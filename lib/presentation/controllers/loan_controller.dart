@@ -9,6 +9,8 @@ class LoanController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  bool isPaying = false;
+
   var monto = 0.0.obs;
   var tasa = 0.0.obs;
   var tiempo = 0.obs;
@@ -75,50 +77,78 @@ class LoanController extends GetxController {
     }
   }
 
-  void marcarCuotaComoPagada(int index) async {
-    var cuota = cuotas[index];
+  Future<void> pagarCuotaMensualDirectamente() async {
+    final user = _auth.currentUser;
 
-    if (!cuota.pagada) {
-      if (saldoDisponible.value >= cuota.valor) {
-        cuota.marcarComoPagada();
-        cuotas.refresh();
+    if (user != null) {
+      final prestamosSnapshot = await _firestore
+          .collection('loans')
+          .where('usuarioId', isEqualTo: user.uid)
+          .get();
 
-        var user = _auth.currentUser;
-        if (user != null) {
+      if (prestamosSnapshot.docs.isNotEmpty) {
+        final prestamoDoc = prestamosSnapshot.docs.first;
+        final prestamoId = prestamoDoc.id;
+        final valorCuota = prestamoDoc['cuotaMensual'] ?? 0.0;
+        final totalAPagarActual = prestamoDoc['totalAPagar'] ?? 0.0;
+
+        if (saldoDisponible.value >= valorCuota) {
           final userDocRef = _firestore.collection('users').doc(user.uid);
+          final prestamoDocRef = _firestore.collection('loans').doc(prestamoId);
 
-          await _firestore.runTransaction((transaction) async {
-            final snapshot = await transaction.get(userDocRef);
-            double saldoActual = snapshot.get('saldo') ?? 0.0;
+          try {
+            final userSnapshot = await userDocRef.get();
+            final saldoActual = userSnapshot.get('saldo') ?? 0.0;
 
-            if (saldoActual >= cuota.valor) {
-              // 1. Registrar cuota pagada
-              await _firestore.collection('cuotasPagadas').add({
-                'userId': user.uid,
-                'cuotaNumero': cuota.numero,
-                'valor': cuota.valor,
-                'fechaPago': FieldValue.serverTimestamp(),
+            if (saldoActual >= valorCuota) {
+              final nuevoTotalAPagar =
+                  (totalAPagarActual - valorCuota).clamp(0, double.infinity);
+
+              await userDocRef.update({
+                'saldo': saldoActual - valorCuota,
               });
 
-              // 2. Restar saldo
-              double nuevoSaldo = saldoActual - cuota.valor;
-              transaction.update(userDocRef, {'saldo': nuevoSaldo});
-              saldoDisponible.value = nuevoSaldo;
+              await prestamoDocRef.update({
+                'totalAPagar': nuevoTotalAPagar,
+              });
 
-              Get.snackbar("Éxito", "Cuota #${cuota.numero} pagada.",
-                  backgroundColor: Colors.green);
+              saldoDisponible.value -= valorCuota;
+              await _actualizarSaldoDisponible(valorCuota);
+
+              if (!Get.isSnackbarOpen) {
+                Get.snackbar("Éxito", "Pago realizado correctamente.",
+                    backgroundColor: Colors.green);
+              }
             } else {
-              throw Exception("Saldo insuficiente durante la transacción.");
+              if (!Get.isSnackbarOpen) {
+                Get.snackbar("Error", "Saldo insuficiente en cuenta.",
+                    backgroundColor: Colors.red);
+              }
             }
-          });
+          } catch (e) {
+            print("Error en la actualización del pago: $e");
+            if (!Get.isSnackbarOpen) {
+              Get.snackbar("Error", "No se pudo completar el pago.",
+                  backgroundColor: Colors.red);
+            }
+          }
+        } else {
+          if (!Get.isSnackbarOpen) {
+            Get.snackbar("Error", "Saldo disponible insuficiente.",
+                backgroundColor: Colors.red);
+          }
         }
       } else {
-        Get.snackbar("Error", "Saldo insuficiente para pagar esta cuota.",
-            backgroundColor: Colors.red);
+        if (!Get.isSnackbarOpen) {
+          Get.snackbar("Error", "No se encontró préstamo activo.",
+              backgroundColor: Colors.red);
+        }
       }
     } else {
-      Get.snackbar("Info", "Esta cuota ya está pagada.",
-          backgroundColor: Colors.orange);
+      if (!Get.isSnackbarOpen) {
+        Get.snackbar("Error", "No se pudo identificar al usuario.",
+            backgroundColor: Colors.red);
+      }
     }
   }
 
@@ -138,6 +168,7 @@ class LoanController extends GetxController {
           'totalAPagar': totalAPagar.value,
           'usuarioId': user.uid,
           'fechaSolicitud': FieldValue.serverTimestamp(),
+          "ultimaFechaPago": Timestamp
         });
 
         // 2. Actualizar el saldo en Firestore
@@ -227,15 +258,22 @@ class LoanController extends GetxController {
     var user = _auth.currentUser;
     if (user != null) {
       final userDocRef = _firestore.collection('users').doc(user.uid);
-      await _firestore.runTransaction((transaction) async {
-        final snapshot = await transaction.get(userDocRef);
-        double saldoActual = snapshot.get('saldo') ?? 0.0;
+      try {
+        // Obtener el saldo actual del usuario
+        final userSnapshot = await userDocRef.get();
+        double saldoActual = userSnapshot.get('saldo') ?? 0.0;
         double nuevoSaldo = saldoActual - cantidad;
 
-        // Actualizar el saldo en Firestore
-        transaction.update(userDocRef, {'saldo': nuevoSaldo});
-        saldoDisponible.value = nuevoSaldo; // Actualizar localmente
-      });
+        // Actualizar el saldo directamente en Firestore
+        await userDocRef.update({'saldo': nuevoSaldo});
+
+        // Actualizar el saldo disponible localmente
+        saldoDisponible.value = nuevoSaldo;
+      } catch (e) {
+        print("Error al actualizar el saldo: $e");
+        Get.snackbar("Error", "No se pudo actualizar el saldo.",
+            backgroundColor: Colors.red);
+      }
     }
   }
 

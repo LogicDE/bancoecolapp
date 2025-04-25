@@ -1,4 +1,3 @@
-import 'package:bancosbase/data/models/cuota_model.dart';
 import 'package:bancosbase/presentation/controllers/loan_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -107,7 +106,8 @@ class _LoanSummaryPageState extends State<LoanSummaryPage> {
                               ),
                               SizedBox(height: 8),
                               ElevatedButton(
-                                onPressed: () => _pagarCuotaMensual(context),
+                                onPressed: () =>
+                                    _pagarCuotaMensual(context, prestamo),
                                 child: Text('Pagar Cuota Mensual'),
                                 style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.blue,
@@ -173,32 +173,43 @@ class _LoanSummaryPageState extends State<LoanSummaryPage> {
     }
   }
 
-  void _pagarCuotaMensual(BuildContext context) {
-    List<CuotaModel> cuotasPendientes =
-        _loanController.cuotas.where((cuota) => !cuota.pagada).toList();
+  void _pagarCuotaMensual(BuildContext context, Map<String, dynamic> prestamo) {
+    final valorCuota = prestamo['cuotaMensual'];
 
-    if (cuotasPendientes.isNotEmpty) {
-      var cuota = cuotasPendientes.first;
-
-      if (_loanController.saldoDisponible.value >= cuota.valor) {
-        // Actualizar el saldo disponible
-        _loanController.saldoDisponible.value -= cuota.valor;
-
-        // Marcar la cuota como pagada
-        _loanController.marcarCuotaComoPagada(cuota.numero - 1);
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Cuota #${cuota.numero} pagada exitosamente')),
-        );
-      } else {
+    if (_loanController.saldoDisponible.value >= valorCuota) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Confirmar Pago'),
+          content: Text(
+              '¿Pagar cuota mensual de \$${valorCuota.toStringAsFixed(2)}?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('Cancelar'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                Navigator.pop(context);
+                await _loanController.pagarCuotaMensualDirectamente();
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: Text('Cuota mensual pagada exitosamente')),
+                  );
+                }
+              },
+              child: Text('Pagar'),
+            ),
+          ],
+        ),
+      );
+    } else {
+      if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Saldo insuficiente para pagar esta cuota')),
         );
       }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('No hay cuotas pendientes')),
-      );
     }
   }
 }
