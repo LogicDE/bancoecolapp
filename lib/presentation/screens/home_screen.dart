@@ -34,6 +34,9 @@ class _DashboardPageState extends State<DashboardPage> {
     {"icon": Iconsax.user, "label": "TIR", "route": "/tir"},
     {"icon": Iconsax.settings, "label": "Configuración", "route": "/settings"},
     {"icon": Iconsax.wallet_2, "label": "Mis Préstamos", "route": "/loan-menu"},
+    {"icon": Iconsax.archive1, "label": "Capitalización", "route": "/capitalization"},
+    {"icon": Iconsax.user, "label": "Perfil", "route": "/profile"},
+    {"icon": Iconsax.settings, "label": "Configuración", "route": "/settings"},
   ];
 
   void _logout() async {

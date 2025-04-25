@@ -1,3 +1,4 @@
+import 'package:bancosbase/presentation/screens/capitalization_screen.dart';
 import 'package:bancosbase/presentation/screens/loans/loan_history_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -17,6 +18,7 @@ import 'presentation/screens/loans/loan_summary_page.dart';
 import 'presentation/screens/loans/loan_application_page.dart';
 import 'presentation/screens/loans/loan_menu_page.dart';
 import 'presentation/screens/loans/loan_report_page.dart';
+import 'presentation/screens/amortization_screen.dart';
 import 'firebase_options.dart';
 import 'core/middlewares/auth_middleware.dart';
 
@@ -99,6 +101,16 @@ class MyApp extends StatelessWidget {
           page: () => LoanHistoryPage(),
           middlewares: [AuthMiddleware()], // Protege la página si es necesario
         ),
+        GetPage(
+          name: '/amortization',
+          page: () => AmortizationScreen(),
+          middlewares: [AuthMiddleware()]
+        ),
+        GetPage(
+          name: '/capitalization',
+          page: () => CapitalizationScreen(),
+          middlewares: [AuthMiddleware()]
+        )
       ],
     );
   }
