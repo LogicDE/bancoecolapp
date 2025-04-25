@@ -69,41 +69,34 @@ class GradientsController extends GetxController {
   }
 
   void calcularGradienteGeometricoCreciente({
-    required double g, // Tasa de crecimiento
+    required double g, // Tasa de crecimiento (decimal)
     required double A, // Pago inicial
-    required int n, // Número de años o períodos
-    required double i, // Tasa de interés
+    required int n, // Número de períodos
+    required double i, // Tasa de interés (decimal)
   }) {
-    // Validaciones previas...
     if (g <= 0 || i <= 0 || A <= 0 || n <= 0) {
-      // Validación de datos válidos
       print("Todos los valores deben ser positivos y mayores a 0.");
       return;
     }
 
-    double vp, vf;
+    double vp;
+    double vf;
 
-    // En caso de gradiente geométrico creciente
-    if (i != g) {
-      // Fórmulas para el valor presente y valor futuro
-      vp = A * ((pow(1 + g, n) - pow(1 + i, n)) / ((g - i) * pow(1 + i, n)));
-      vf = A * ((pow(1 + g, n) - pow(1 + i, n)) / (g - i));
+    if (i == g) {
+      vp = (A * n) / (1 + i);
+      vf = A * n;
     } else {
-      // Si las tasas son iguales, simplificamos la fórmula
-      vp = (n * A) / (1 + i);
-      vf = n * A;
+      double ratio = (1 + g) / (1 + i);
+      vp = A * (1 - pow(ratio, n)) / (i - g);
+      vf = A * (pow(1 + g, n) - pow(1 + i, n)) / (g - i);
     }
 
-    // Asignación de valores con más precisión
-    presentValue.value = double.parse(
-        vp.toStringAsFixed(2)); // Usando 2 decimales para mayor precisión
-    futureValue.value = double.parse(
-        vf.toStringAsFixed(2)); // Usando 2 decimales para mayor precisión
+    presentValue.value = double.parse(vp.toStringAsFixed(2));
+    futureValue.value = double.parse(vf.toStringAsFixed(2));
 
-    // Generar la progresión de los pagos
     progression.clear();
     for (int t = 0; t < n; t++) {
-      progression.add(A * pow(1 + g, t)); // Pagos crecientes
+      progression.add(A * pow(1 + g, t));
     }
   }
 

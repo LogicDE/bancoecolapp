@@ -1,3 +1,4 @@
+import 'package:bancosbase/presentation/screens/loans/loan_history_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,11 @@ import 'presentation/screens/interest_rate_screen.dart';
 import 'presentation/screens/annuity_screen.dart';
 import 'presentation/screens/compound_interest_screen.dart';
 import 'presentation/screens/gradients_screen.dart';
+import 'presentation/screens/tir_screen.dart';
+import 'presentation/screens/loans/loan_summary_page.dart';
+import 'presentation/screens/loans/loan_application_page.dart';
+import 'presentation/screens/loans/loan_menu_page.dart';
+import 'presentation/screens/loans/loan_report_page.dart';
 import 'firebase_options.dart';
 import 'core/middlewares/auth_middleware.dart';
 
@@ -59,8 +65,38 @@ class MyApp extends StatelessWidget {
           middlewares: [AuthMiddleware()],
         ),
         GetPage(
-        name: '/gradients', // Ruta para la nueva página
+          name: '/gradients', // Ruta para la nueva página
           page: () => GradientsPage(),
+          middlewares: [AuthMiddleware()], // Protege la página si es necesario
+        ),
+        GetPage(
+          name: '/tir', // Ruta para la nueva página
+          page: () => TirPage(),
+          middlewares: [AuthMiddleware()], // Protege la página si es necesario
+        ),
+        GetPage(
+          name: '/loan-menu', // Ruta para la página de préstamos
+          page: () => LoanMenuPage(), // La clase que muestra los préstamos
+          middlewares: [AuthMiddleware()], // Protección si es necesario
+        ),
+        GetPage(
+          name: '/loan-application', // Ruta para la nueva página
+          page: () => LoanApplicationPage(),
+          middlewares: [AuthMiddleware()], // Protege la página si es necesario
+        ),
+        GetPage(
+          name: '/loan-report', // Ruta para la nueva página
+          page: () => LoanReportPage(),
+          middlewares: [AuthMiddleware()], // Protege la página si es necesario
+        ),
+        GetPage(
+          name: '/loan-summary', // Ruta para la nueva página
+          page: () => LoanSummaryPage(),
+          middlewares: [AuthMiddleware()], // Protege la página si es necesario
+        ),
+        GetPage(
+          name: '/loan-history', // Ruta para la nueva página
+          page: () => LoanHistoryPage(),
           middlewares: [AuthMiddleware()], // Protege la página si es necesario
         ),
       ],

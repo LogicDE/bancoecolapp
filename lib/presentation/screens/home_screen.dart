@@ -1,3 +1,4 @@
+import 'package:bancosbase/presentation/controllers/loan_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -30,18 +31,21 @@ class _DashboardPageState extends State<DashboardPage> {
     {"icon": Iconsax.wallet, "label": "Anualidades", "route": "/annuities"},
     {"icon": Iconsax.status_up, "label": "Gradientes", "route": "/gradients"},
     {"icon": Iconsax.money, "label": "Amortización", "route": "/amortization"},
-    {"icon": Iconsax.user, "label": "Perfil", "route": "/profile"},
+    {"icon": Iconsax.user, "label": "TIR", "route": "/tir"},
     {"icon": Iconsax.settings, "label": "Configuración", "route": "/settings"},
-    {
-      "icon": Iconsax.activity,
-      "label": "Gradiente Aritmético",
-      "route": "/aritmetic-gradient"
-    },
+    {"icon": Iconsax.wallet_2, "label": "Mis Préstamos", "route": "/loan-menu"},
   ];
 
   void _logout() async {
     await FirebaseAuth.instance.signOut();
     Get.offAllNamed("/sign-in");
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final LoanController controller = Get.put(LoanController());
+    controller.obtenerSaldo();
   }
 
   @override
@@ -55,8 +59,8 @@ class _DashboardPageState extends State<DashboardPage> {
             children: [
               _buildHeader(context),
               const SizedBox(height: 20),
-              // Puedes restaurar esta tarjeta cuando quieras mostrar balance
-              // _buildBalanceCard(),
+              _buildBalanceCard(),
+              const SizedBox(height: 20),
               Expanded(child: _buildOptionsGrid()),
             ],
           ),
@@ -99,7 +103,7 @@ class _DashboardPageState extends State<DashboardPage> {
             IconButton(
               icon: const Icon(Iconsax.notification,
                   size: 28, color: Colors.black54),
-              onPressed: () {}, // Agrega funcionalidad si es necesario
+              onPressed: () {},
             ),
             IconButton(
               icon: const Icon(Iconsax.logout, size: 28, color: Colors.red),
@@ -149,27 +153,36 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  // Descomenta esto si necesitas mostrar balance
-  /*
   Widget _buildBalanceCard() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [Colors.blueAccent, Colors.blue.shade700]),
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 5)],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          Text("Total Balance", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white)),
-          SizedBox(height: 4),
-          Text("\$3,469.52", style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white)),
-          SizedBox(height: 8),
-          Text("**** **** **** 1076", style: TextStyle(color: Colors.white70)),
-        ],
-      ),
-    );
+    final LoanController controller = Get.put(LoanController());
+
+    return Obx(() => Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.blueAccent, Colors.blue.shade700],
+            ),
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 5)],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("Saldo disponible",
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white)),
+              const SizedBox(height: 4),
+              Text("\$${controller.saldoDisponible.value.toStringAsFixed(2)}",
+                  style: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white)),
+              const SizedBox(height: 8),
+              const Text("EcolApp", style: TextStyle(color: Colors.white70)),
+            ],
+          ),
+        ));
   }
-  */
 }

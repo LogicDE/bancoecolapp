@@ -5,29 +5,29 @@ import '../controllers/gradients_controller.dart';
 
 class GradientsPage extends StatefulWidget {
   @override
-  _GradientsPageState createState() => _GradientsPageState();
+  State<GradientsPage> createState() => _GradientsPageState();
 }
 
 class _GradientsPageState extends State<GradientsPage> {
-  final GradientsController controller = Get.put(GradientsController());
-  final TextEditingController firstPaymentController = TextEditingController();
-  final TextEditingController increaseController = TextEditingController();
-  final TextEditingController periodsController = TextEditingController();
-  final TextEditingController rateController = TextEditingController();
+  final controller = Get.put(GradientsController());
 
-  // Variable para seleccionar el tipo de gradiente
+  final firstPaymentController = TextEditingController();
+  final increaseController = TextEditingController();
+  final periodsController = TextEditingController();
+  final rateController = TextEditingController();
+
   String selectedGradient = 'Aritmético';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Cálculo de Gradientes")),
+      appBar: AppBar(title: const Text("Cálculo de Gradientes")),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildGradientSelector(), // Selector de tipo de gradiente
+            _buildGradientSelector(),
             const SizedBox(height: 20),
             _buildInputFields(),
             const SizedBox(height: 20),
@@ -42,33 +42,35 @@ class _GradientsPageState extends State<GradientsPage> {
     );
   }
 
-  // Selector para elegir el tipo de gradiente
   Widget _buildGradientSelector() {
     return Card(
       elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            Text("Selecciona el tipo de Gradiente:"),
+            const Text("Selecciona el tipo de Gradiente:"),
             DropdownButton<String>(
               value: selectedGradient,
-              onChanged: (String? newValue) {
-                setState(() {
-                  selectedGradient = newValue!;
-                });
+              isExpanded: true,
+              onChanged: (value) {
+                if (value != null) {
+                  setState(() {
+                    selectedGradient = value;
+                  });
+                }
               },
-              items: <String>[
+              items: [
                 'Aritmético',
                 'Geométrico Creciente',
-                'Geométrico Decreciente'
-              ].map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
+                'Geométrico Decreciente',
+              ]
+                  .map((value) => DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      ))
+                  .toList(),
             ),
           ],
         ),
@@ -81,7 +83,7 @@ class _GradientsPageState extends State<GradientsPage> {
       elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             _buildTextField(firstPaymentController, "Primer Pago (P)"),
@@ -94,16 +96,16 @@ class _GradientsPageState extends State<GradientsPage> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String label) {
+  Widget _buildTextField(TextEditingController ctrl, String label) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextField(
-        controller: controller,
+        controller: ctrl,
         decoration: InputDecoration(
           labelText: label,
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
         ),
-        keyboardType: TextInputType.number,
+        keyboardType: TextInputType.numberWithOptions(decimal: true),
       ),
     );
   }
@@ -112,54 +114,10 @@ class _GradientsPageState extends State<GradientsPage> {
     return Wrap(
       spacing: 10,
       children: [
-        _buildButton("Calcular Valor Presente", Icons.calculate, () {
-          double P = double.tryParse(firstPaymentController.text) ?? 0;
-          double G = double.tryParse(increaseController.text) ?? 0;
-          int n = int.tryParse(periodsController.text) ?? 0;
-          double i = double.tryParse(rateController.text) ?? 0;
-
-          if (P >= 0 && G >= 0 && n > 0 && i >= 0) {
-            if (selectedGradient == 'Aritmético') {
-              controller.calcularGradienteAritmetico(
-                  g: G, A: P, n: n, i: i / 100);
-            } else if (selectedGradient == 'Geométrico Creciente') {
-              controller.calcularGradienteGeometricoCreciente(
-                  g: G, A: P, n: n, i: i / 100);
-            } else if (selectedGradient == 'Geométrico Decreciente') {
-              controller.calcularGradienteGeometricoDecreciente(
-                  g: G, A: P, n: n, i: i / 100);
-            } else {
-              Get.snackbar("Error", "Tipo de gradiente no válido.");
-            }
-          } else {
-            Get.snackbar(
-                "Error", "Por favor ingrese todos los valores correctamente.");
-          }
-        }),
-        _buildButton("Calcular Valor Futuro", Icons.timeline, () {
-          double P = double.tryParse(firstPaymentController.text) ?? 0;
-          double G = double.tryParse(increaseController.text) ?? 0;
-          int n = int.tryParse(periodsController.text) ?? 0;
-          double i = double.tryParse(rateController.text) ?? 0;
-
-          if (P >= 0 && G >= 0 && n > 0 && i >= 0) {
-            if (selectedGradient == 'Aritmético') {
-              controller.calcularGradienteAritmetico(
-                  g: G, A: P, n: n, i: i / 100);
-            } else if (selectedGradient == 'Geométrico Creciente') {
-              controller.calcularGradienteGeometricoCreciente(
-                  g: G, A: P, n: n, i: i / 100);
-            } else if (selectedGradient == 'Geométrico Decreciente') {
-              controller.calcularGradienteGeometricoDecreciente(
-                  g: G, A: P, n: n, i: i / 100);
-            } else {
-              Get.snackbar("Error", "Tipo de gradiente no válido.");
-            }
-          } else {
-            Get.snackbar(
-                "Error", "Datos inválidos para calcular el valor futuro.");
-          }
-        }),
+        _buildButton(
+            "Calcular Valor Presente", Icons.calculate, _calcularValorPresente),
+        _buildButton(
+            "Calcular Valor Futuro", Icons.timeline, _calcularValorFuturo),
       ],
     );
   }
@@ -172,12 +130,59 @@ class _GradientsPageState extends State<GradientsPage> {
     );
   }
 
+  void _calcularValorPresente() {
+    final datos = _obtenerDatos();
+    if (datos == null) return;
+
+    final (P, G, n, iRaw) = datos;
+    final i = iRaw / 100;
+
+    switch (selectedGradient) {
+      case 'Aritmético':
+        controller.calcularGradienteAritmetico(g: G, A: P, n: n, i: i);
+        break;
+      case 'Geométrico Creciente':
+        final g = G / 100;
+        controller.calcularGradienteGeometricoCreciente(g: g, A: P, n: n, i: i);
+        break;
+      case 'Geométrico Decreciente':
+        final g = G / 100;
+        controller.calcularGradienteGeometricoDecreciente(
+            g: g, A: P, n: n, i: i);
+        break;
+      default:
+        Get.snackbar("Error", "Tipo de gradiente no válido.");
+    }
+  }
+
+  void _calcularValorFuturo() {
+    // Misma lógica de presente, reutilizable si se separa lógica en el controlador.
+    _calcularValorPresente();
+  }
+
+  /// Valida e intenta obtener los datos ingresados por el usuario
+  /// Devuelve una tupla (P, G, n, i) o `null` si hay error
+  (double, double, int, double)? _obtenerDatos() {
+    final P = double.tryParse(firstPaymentController.text.trim()) ?? -1;
+    final G = double.tryParse(increaseController.text.trim()) ?? -1;
+    final n = int.tryParse(periodsController.text.trim()) ?? -1;
+    final i = double.tryParse(rateController.text.trim()) ?? -1;
+
+    if (P < 0 || G < 0 || n <= 0 || i < 0) {
+      Get.snackbar(
+          "Error", "Por favor, ingresa todos los valores correctamente.");
+      return null;
+    }
+
+    return (P, G, n, i);
+  }
+
   Widget _buildResults() {
     return Card(
       elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             Obx(() => _buildResultText(
@@ -192,27 +197,33 @@ class _GradientsPageState extends State<GradientsPage> {
 
   Widget _buildResultText(String text) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Text(text,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Text(
+        text,
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      ),
     );
   }
 
   Widget _buildChart() {
     return SizedBox(
       height: 250,
-      child: Obx(
-        () => LineChart(
+      child: Obx(() {
+        final data = controller.progression;
+        if (data.isEmpty)
+          return const Center(child: Text("Sin datos para mostrar."));
+
+        return LineChart(
           LineChartData(
             titlesData: FlTitlesData(show: false),
             borderData: FlBorderData(show: false),
             gridData: FlGridData(show: false),
             lineBarsData: [
               LineChartBarData(
-                spots: controller.progression
+                spots: data
                     .asMap()
                     .entries
-                    .map((entry) => FlSpot(entry.key.toDouble(), entry.value))
+                    .map((e) => FlSpot(e.key.toDouble(), e.value))
                     .toList(),
                 isCurved: true,
                 color: Colors.green,
@@ -220,8 +231,8 @@ class _GradientsPageState extends State<GradientsPage> {
               ),
             ],
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }

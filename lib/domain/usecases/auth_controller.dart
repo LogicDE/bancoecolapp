@@ -35,6 +35,7 @@ class AuthController extends GetxController {
         'cedula': cedula,
         'email': email,
         'createdAt': FieldValue.serverTimestamp(),
+        'saldo': 0.0,
       });
 
       Get.snackbar("Éxito", "Cuenta creada correctamente",
