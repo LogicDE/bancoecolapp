@@ -24,8 +24,8 @@ class AmortizationController extends GetxController {
 
   // Nuevos controladores de entrada
   final capitalCtrl = TextEditingController(text: "10000");
-  final rateCtrl = TextEditingController(text: "10"); // porcentaje
-  final periodsCtrl = TextEditingController(text: "12");
+  final rateCtrl = TextEditingController(text: "5"); // porcentaje
+  final periodsCtrl = TextEditingController(text: "60");
 
   void setType(String newType) {
     type.value = newType;
